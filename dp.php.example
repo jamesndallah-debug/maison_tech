@@ -1,0 +1,29 @@
+<?php
+/**
+ * MAISON TECH - DATABASE CONFIGURATION TEMPLATE
+ * 
+ * ⚠️ DO NOT COMMIT THIS FILE WITH REAL CREDENTIALS TO GIT!
+ * 
+ * Copy this file as dp.php and update with your actual credentials.
+ * Keep the real dp.php file out of version control (it's in .gitignore).
+ */
+
+// Database connection parameters
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "maison_tech";
+$port = 3306; // Default MySQL port
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname, $port);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Set charset to UTF-8
+$conn->set_charset("utf8mb4");
+
+?>
