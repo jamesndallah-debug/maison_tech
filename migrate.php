@@ -5,9 +5,15 @@ if (session_status() === PHP_SESSION_NONE) {
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
+$dbHost = getenv('DB_HOST') ?: '127.0.0.1';
+$dbPort = (int)(getenv('DB_PORT') ?: 3306);
+$dbUser = getenv('DB_USER') ?: 'root';
+$dbPass = getenv('DB_PASSWORD') ?: '';
+$dbName = getenv('DB_NAME') ?: 'maison_tech';
+
 $bootstrap_allowed = false;
 try {
-    $probe = new mysqli("localhost", "root", "", "maison_tech");
+    $probe = new mysqli($dbHost, $dbUser, $dbPass, $dbName, $dbPort);
     $tbl = $probe->query("SHOW TABLES LIKE 'employees'");
     if (!$tbl || $tbl->num_rows === 0) {
         $bootstrap_allowed = true;
@@ -37,9 +43,9 @@ $err = function ($msg) use (&$messages) { $messages[] = ['err', $msg]; };
 
 $conn = null;
 try {
-    $conn = new mysqli("localhost", "root", "");
-    $conn->query("CREATE DATABASE IF NOT EXISTS maison_tech");
-    $conn->select_db("maison_tech");
+    $conn = new mysqli($dbHost, $dbUser, $dbPass, "", $dbPort);
+    $conn->query("CREATE DATABASE IF NOT EXISTS `$dbName`");
+    $conn->select_db($dbName);
 
     // Core tables
     $conn->query("CREATE TABLE IF NOT EXISTS employees (
