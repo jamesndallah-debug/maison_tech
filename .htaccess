@@ -35,8 +35,7 @@ Options -Indexes
 # ErrorDocument 500 /500.html
 
 # PHP Security Settings
-php_flag display_errors Off
-php_flag log_errors On
+
 php_value error_log /tmp/php_errors.log
 
 # File Upload Security
