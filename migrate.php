@@ -168,11 +168,27 @@ try {
     if ($adminCount === 0) {
         $username = 'admin';
         $hash = password_hash('password', PASSWORD_DEFAULT);
-        $stmt = $conn->prepare("INSERT INTO employees (username, password, role) VALUES (?, ?, 'admin')");
-        $stmt->bind_param("ss", $username, $hash);
-        $stmt->execute();
-        $stmt->close();
-        $ok("Created default admin user (username: admin, password: password).");
+
+        $check = $conn->prepare("SELECT id FROM employees WHERE username = ? LIMIT 1");
+        $check->bind_param("s", $username);
+        $check->execute();
+        $exists = $check->get_result()->fetch_assoc();
+        $check->close();
+
+        if ($exists && isset($exists['id'])) {
+            $id = (int)$exists['id'];
+            $up = $conn->prepare("UPDATE employees SET role='admin', password=? WHERE id=?");
+            $up->bind_param("si", $hash, $id);
+            $up->execute();
+            $up->close();
+            $ok("Repaired existing 'admin' user to admin role with default password.");
+        } else {
+            $stmt = $conn->prepare("INSERT INTO employees (username, password, role) VALUES (?, ?, 'admin')");
+            $stmt->bind_param("ss", $username, $hash);
+            $stmt->execute();
+            $stmt->close();
+            $ok("Created default admin user (username: admin, password: password).");
+        }
     }
 
     $ok("Migration complete. All required tables are present.");
