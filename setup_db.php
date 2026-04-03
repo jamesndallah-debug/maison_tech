@@ -3,8 +3,31 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Setup script is admin-only (must be logged in as admin)
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+// Bootstrap rule:
+// - If an admin already exists, setup is admin-only.
+// - If no admin exists yet (fresh environment), allow setup to initialize the system.
+$bootstrap_allowed = false;
+
+$probe = @new mysqli("localhost", "root", "", "maison_tech");
+if (!$probe->connect_error) {
+    $tbl = $probe->query("SHOW TABLES LIKE 'employees'");
+    if (!$tbl || $tbl->num_rows === 0) {
+        $bootstrap_allowed = true;
+    } else {
+        $adminCheck = $probe->query("SELECT COUNT(*) AS c FROM employees WHERE role='admin'");
+        $adminCount = (int)($adminCheck->fetch_assoc()['c'] ?? 0);
+        $bootstrap_allowed = ($adminCount === 0);
+    }
+    $probe->close();
+} else {
+    // Database may not exist yet, allow first-time setup.
+    $bootstrap_allowed = true;
+}
+
+if (
+    !$bootstrap_allowed &&
+    (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin')
+) {
     http_response_code(403);
     echo "<div style='font-family: sans-serif; padding: 14px; background: #fff5f5; border: 1px solid #fed7d7; border-radius: 8px; color: #9b2c2c;'>Access Denied. Admins only.</div>";
     exit;
