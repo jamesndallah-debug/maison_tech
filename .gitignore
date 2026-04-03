@@ -4,6 +4,7 @@ dp.production.php
 dp.digitalocean.ready.php
 dp.php.digitalocean
 dp.php.production
+dp.env.php
 
 # Environment Files
 .env
