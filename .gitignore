@@ -1,0 +1,45 @@
+# Database Configuration Files (CONTAINS SENSITIVE CREDENTIALS)
+dp.php
+dp.production.php
+dp.digitalocean.ready.php
+dp.php.digitalocean
+dp.php.production
+
+# Environment Files
+.env
+.env.local
+.env.production
+
+# Log Files
+*.log
+logs/
+
+# Uploads and User Generated Content
+uploads/*
+!uploads/.gitkeep
+
+# IDE and Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary Files
+tmp/
+temp/
+*.tmp
+
+# Composer
+/vendor/
+composer.lock
+
+# Node Modules
+node_modules/
+package-lock.json
+yarn.lock
