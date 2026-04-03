@@ -31,8 +31,10 @@
         <hr class="mt-4 mb-4 border-light">
         <div class="text-center text-white-50">
             <small>&copy; <?php echo date('Y'); ?> Maison Tech. All Rights Reserved.</small>
-            <div class="mt-2">
-                <a href="login.php" class="text-white-50 text-decoration-none" style="font-size: 10px; opacity: 0.3;">Staff Portal</a>
+            <div class="mt-3">
+                <a href="login.php" class="staff-login-btn">
+                    <i class="fas fa-lock"></i> Staff Login Portal
+                </a>
             </div>
         </div>
     </div>
@@ -113,6 +115,34 @@
             right: 20px;
             gap: 10px;
         }
+    }
+    
+    /* Staff Login Button Styling */
+    .staff-login-btn {
+        display: inline-block;
+        background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+        color: #1a1a1a;
+        padding: 12px 30px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        border: 2px solid transparent;
+    }
+    
+    .staff-login-btn:hover {
+        background: linear-gradient(135deg, #ffed4e 0%, #ffd700 100%);
+        color: #000;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 215, 0, 0.5);
+        border-color: #fff;
+    }
+    
+    .staff-login-btn i {
+        margin-right: 8px;
+        font-size: 16px;
     }
 </style>
 
