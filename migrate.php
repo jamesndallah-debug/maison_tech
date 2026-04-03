@@ -5,9 +5,9 @@ if (session_status() === PHP_SESSION_NONE) {
 
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-$probe = @new mysqli("localhost", "root", "", "maison_tech");
 $bootstrap_allowed = false;
-if (!$probe->connect_error) {
+try {
+    $probe = new mysqli("localhost", "root", "", "maison_tech");
     $tbl = $probe->query("SHOW TABLES LIKE 'employees'");
     if (!$tbl || $tbl->num_rows === 0) {
         $bootstrap_allowed = true;
@@ -17,7 +17,8 @@ if (!$probe->connect_error) {
         $bootstrap_allowed = ($adminCount === 0);
     }
     $probe->close();
-} else {
+} catch (Throwable $e) {
+    // DB may not exist yet or credentials may differ in fresh environment.
     $bootstrap_allowed = true;
 }
 
@@ -30,15 +31,16 @@ if (
     exit;
 }
 
-$conn = new mysqli("localhost", "root", "");
-$conn->query("CREATE DATABASE IF NOT EXISTS maison_tech");
-$conn->select_db("maison_tech");
-
 $messages = [];
 $ok = function ($msg) use (&$messages) { $messages[] = ['ok', $msg]; };
 $err = function ($msg) use (&$messages) { $messages[] = ['err', $msg]; };
 
+$conn = null;
 try {
+    $conn = new mysqli("localhost", "root", "");
+    $conn->query("CREATE DATABASE IF NOT EXISTS maison_tech");
+    $conn->select_db("maison_tech");
+
     // Core tables
     $conn->query("CREATE TABLE IF NOT EXISTS employees (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -178,7 +180,9 @@ try {
     $err("Migration failed: " . $e->getMessage());
 }
 
-$conn->close();
+if ($conn instanceof mysqli) {
+    $conn->close();
+}
 ?>
 <!doctype html>
 <html lang="en">
