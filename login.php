@@ -7,8 +7,8 @@ $username = '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_POST['username']) && !empty($_POST['password'])) {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
+        $username = (string)$_POST['username'];
+        $password = (string)$_POST['password'];
 
         try {
             $stmt = $conn->prepare("SELECT id, password, role FROM employees WHERE username = ?");
@@ -21,7 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if ($result->num_rows > 0) {
                 $user = $result->fetch_assoc();
-                if (password_verify($password, $user['password'])) {
+                $storedHash = isset($user['password']) ? (string)$user['password'] : '';
+                if ($storedHash !== '' && password_verify($password, $storedHash)) {
                     $_SESSION['loggedin'] = true;
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['username'] = $username;
@@ -51,6 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         } catch (Exception $e) {
             $error_message = "Error: " . $e->getMessage();
+        } catch (Throwable $e) {
+            // Prevent production 500s from uncaught PHP runtime errors.
+            $error_message = "Login failed. Please try again or contact the administrator.";
         }
     } else {
         $error_message = 'Please enter both username and password.';
