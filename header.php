@@ -16,9 +16,14 @@ $current_page = basename($_SERVER['PHP_SELF']);
 // Check for low stock items for the badge
 $low_stock_count = 0;
 if (isset($conn)) {
-    $res = $conn->query("SELECT COUNT(*) as count FROM products WHERE quantity < 10");
-    if ($res) {
-        $low_stock_count = $res->fetch_assoc()['count'];
+    try {
+        $res = $conn->query("SELECT COUNT(*) as count FROM products WHERE quantity < 10");
+        if ($res) {
+            $low_stock_count = $res->fetch_assoc()['count'];
+        }
+    } catch (Throwable $e) {
+        // If products table doesn't exist yet, keep badge at 0.
+        $low_stock_count = 0;
     }
 }
 ?>

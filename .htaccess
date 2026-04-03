@@ -14,19 +14,16 @@ Options -Indexes
 
 # Protect sensitive files
 <FilesMatch "^\.">
-    Order allow,deny
-    Deny from all
+    Require all denied
 </FilesMatch>
 
 # Protect configuration files
 <Files "dp.php">
-    Order allow,deny
-    Deny from all
+    Require all denied
 </Files>
 
 <FilesMatch "\.(sql|log|ini|sh)$">
-    Order allow,deny
-    Deny from all
+    Require all denied
 </FilesMatch>
 
 # Custom Error Pages (Optional)
@@ -43,8 +40,7 @@ Options -Indexes
 
 # File Upload Security
 <FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
-    Order Allow,Deny
-    Allow from all
+    Require all granted
 </FilesMatch>
 
 # Prevent execution of PHP in uploads directory
