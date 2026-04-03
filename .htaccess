@@ -35,8 +35,11 @@ Options -Indexes
 # ErrorDocument 500 /500.html
 
 # PHP Security Settings
-
-php_value error_log /tmp/php_errors.log
+# NOTE: php_value only works with mod_php. On PHP-FPM/CGI (common on cloud),
+# raw php_value causes a 500 error. Keep it inside mod_php guard.
+<IfModule mod_php.c>
+    php_value error_log /tmp/php_errors.log
+</IfModule>
 
 # File Upload Security
 <FilesMatch "\.(jpg|jpeg|png|gif|webp)$">
